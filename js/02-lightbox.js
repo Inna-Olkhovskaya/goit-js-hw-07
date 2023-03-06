@@ -33,3 +33,42 @@ console.log(galleryItems);
 Посмотри в документации секцию «Options» и добавь отображение подписей
 к изображениям из атрибута alt.
 Пусть подпись будет снизу и появляется через 250 миллисекунд после открытия изображения.*/
+
+const SimpleLightbox = window.SimpleLightbox;
+const galleryContainer = document.querySelector(".gallery");
+
+function createGalleryCardsMarkup(items) {
+  return items
+    .map(({ preview, original, description }) => {
+      return `
+    <li>
+        <a class="gallery__item" href="${original}">
+        <img class="gallery__image"
+            src="${preview}"
+            data-source="${original}"
+            alt="${description}" />
+        </a>
+    </li>
+    `;
+    })
+    .join("");
+}
+const cardsMarkup = createGalleryCardsMarkup(galleryItems);
+galleryContainer.insertAdjacentHTML("beforeend", cardsMarkup);
+
+galleryContainer.addEventListener("click", handleGalleryClick);
+
+function handleGalleryClick(event) {
+  event.preventDefault();
+  if (event.target.nodeName !== "IMG") {
+    return;
+  }
+
+  const modalImg = event.target.dataset.source;
+
+  new SimpleLightbox(".gallery a", {
+    captions: true,
+    captionsData: "alt",
+    captionDelay: 250,
+  });
+}
